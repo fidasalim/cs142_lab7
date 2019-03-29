@@ -122,31 +122,36 @@ class BiST{
 		void deleteNode(int value){
 			//search deleting nodee
 			Node *current = search1(root,value);
+			//element to be deleted is null
 			if(current == NULL){
-			    return;
+				return;
 			}
 			else{
-				//replacing the values
-			    if(current->left == NULL){ 
-				    replace_at_parent1(current->right,current);
-			    }
-    			else if(current->right == NULL){ 
-    				replace_at_parent1(current->left,current);
-    			}
-    			else{ 
-    			    Node *temp = find_min1(current->right);
-    			    if(current == root){
-    	                current->data = temp->data;
-    	                replace_at_parent1(NULL,temp);
-    				    delete temp;
-    			    }
-    			    else{
-    				    replace_at_parent1(temp,current);
-    				    temp->parent = current->parent;
-    				    temp->left = current->left;
-    				    delete temp;
-    			    }
-    			}
+			//replacing the values
+				if(current->left == NULL){ 
+					replace_at_parent1(current->right,current);
+				}
+				else if(current->right == NULL){ 
+					replace_at_parent1(current->left,current);
+				}
+				else{ 
+					Node *temp = find_min1(current->right);
+					//if to be deleted is root
+					if(current == root){
+						current->data = temp->data;
+						replace_at_parent1(NULL,temp);
+						delete temp;
+					}
+					else{	//if delete element is not root
+						//replace min and current
+						replace_at_parent1(temp,current);
+						//temp parent is current parent
+						temp->parent = current->parent;
+						//temp left is current left
+						temp->left = current->left;
+						delete temp;
+					}
+				}
 			}
 			
 		}
@@ -157,39 +162,47 @@ class BiST{
 			replace_at_parent1(current,rep);
 		}
 		void replace_at_parent1(Node *current,Node *rep){
+			//the replacing nodeis root
 			if(rep == root){
 				root = current;	
 			}
+			//the one to be replaced is root
 			else if(current == root){
 				return;
 			}
-			else{
+			else{	//finding position of node that current will replace
 				if(rep->data > rep->parent->data){
-				    if(current == NULL){
-			            rep->parent->right = NULL;
-			        }
-			        else{
-			            rep->parent->right = current;
-    					if(current->data > current->parent->data){
-    						current->parent->right = NULL;
-    					}
-    					else current->parent->left = NULL;
-    					current->parent = rep->parent;
-			        }
+					if(current == NULL){
+						rep->parent->right = NULL;
+					}
+			        	else{	//the step of replacing
+						//rep parent right will be current
+			            		rep->parent->right = current;
+    						if(current->data > current->parent->data){
+    							current->parent->right = NULL;
+    						}
+						//current parent child will be null
+    						else current->parent->left = NULL;
+						//current parent will be reps parent
+    						current->parent = rep->parent;
+			        	}
 					
 				}
 				else{
-				    if(current == NULL){
-			            rep->parent->left = NULL;
-			        }
-			        else{
-			     	rep->parent->left = current;
-					if(current->data>current->parent->data){
-						current->parent->right = NULL;
+					if(current == NULL){
+						rep->parent->left = NULL;
 					}
-					else current->parent->left = NULL;
-					current->parent = rep->parent;       
-			        }
+					else{	//the step of replacing
+						//rep parent right will be current
+						rep->parent->left = current;
+						if(current->data>current->parent->data){
+							current->parent->right = NULL;
+						}
+						//current parent child will be null
+						else current->parent->left = NULL;
+						//current parent will be reps parent
+						current->parent = rep->parent;       
+					}
 				
 				}
 			}
